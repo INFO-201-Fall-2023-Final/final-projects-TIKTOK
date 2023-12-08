@@ -32,7 +32,7 @@ about_view <- fluidPage(
 )
 
 ui <- navbarPage(
-  "In-class Ex",
+  "Final Project INFO201",
   tabPanel("About", about_view),
   tabPanel("Analysis", analysis_view)
 )
