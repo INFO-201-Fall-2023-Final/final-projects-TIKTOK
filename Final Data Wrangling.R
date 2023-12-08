@@ -31,3 +31,7 @@ tiktok_df <- filter(tiktok_df, !is.na(song))
 
 write.csv(tiktok_df, "tiktok.csv", row.names=TRUE)
 
+like_count <- nrow(tiktok_df[tiktok_df$video_like_count > 10000, ])
+
+popular_music <- names(which.max(table(df$song)))
+print(paste("The most popular music is:", popular_music))
