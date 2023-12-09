@@ -7,7 +7,7 @@ library(shiny)
 source("Final Data Wrangling.R")
 
 
-about_view <-   fluidPage(
+about_view <-  fluidPage(
   titlePanel("How TikTok's background sound affect production traffic"),
 # br(),
 
@@ -43,6 +43,7 @@ algorithm_view <- fluidPage(h1("What kinds of video gets promoted by Tiktok?"),
                                 selectInput(
                                   inputId = "tiktok_ele",
                                   label = "Different elements of a video",
+                                  choices = tiktok_df$duration_category
                                 )
                               ),
                               mainPanel(
