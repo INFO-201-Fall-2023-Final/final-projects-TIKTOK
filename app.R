@@ -75,9 +75,10 @@ ui <- navbarPage(inverse = TRUE, "Final Project INFO201",
                                                 DT::dataTableOutput("counttable")),
                                    
                                    mainPanel( 
-                                     p(strong(em("\"...It's full of flowers and heart-shaped boxes, and things we're all too young to know.\""), "1.12 - The Book of Love")),
-                                     p("Unsurprisingly there's a lot of love, but what else? Hover over the word cloud below, or search for words in the table to the right:"),
-                                     wordcloud2Output("wordcloud", width = "100%", height = "565px")
+                                     p(strong(em("What are the musics that used in the top viewed, top liked and top shared music on TIKTOK?"), )),
+                                     p("These are some of the music that are used in the most viewed, most liked and shared video posted on tiktok, as we can see, views sometimes don't correlate with amount of likes and shares.
+                                       It is important to take note that these songs are only including song and not the original audio of the video itself."),
+                                     wordcloud2Output("wordcloud", width = "100%", height = "570px")
                                    )
            )
            )
