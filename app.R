@@ -1,15 +1,17 @@
 library(dplyr)
 library(stringr)
 library(ggplot2)
+library(wordcloud2) 
 library(shiny)
 # Sunny can edited it!
 
 source("Final Data Wrangling.R")
 
+pal <- c("black", "#00f2ea", "#858B8E", "#ff0050")
 
 about_view <-  fluidPage(
   titlePanel("How TikTok's background sound affect production traffic"),
-# br(),
+  br(),
 
 tags$style(HTML("
     h2 {
@@ -36,19 +38,19 @@ div(style = "float: right; margin-left: 50px;",
              width = 500, height = 300, class = "right-image")),
                         
 )
-algorithm_view <- fluidPage(h1("What kinds of video gets promoted by Tiktok?"),
+algorithm_view <- fluidPage(h1("What video length gets promoted the most by Tiktok?"),
                             sidebarLayout(
                               sidebarPanel( 
-                                h2("Control Panel"),
+                                h2("Choose viedo length"),
                                 selectInput(
                                   inputId = "tiktok_ele",
-                                  label = "Different elements of a video",
+                                  label = "Different length of a video",
                                   choices = tiktok_df$duration_category
                                 )
                               ),
                               mainPanel(
                                 tabsetPanel(
-                                  tabPanel("Plot", plotOutput(outputId = "barchart")),
+                                  tabPanel("Plot", plotOutput(outputId = "chart")),
                                 )
                               )
                             )
@@ -60,15 +62,52 @@ algorithm_view <- fluidPage(h1("What kinds of video gets promoted by Tiktok?"),
 ui <- navbarPage(inverse = TRUE, "Final Project INFO201",
   tabPanel("Intro", includeCSS("styles.css"), about_view),
   
-  tabPanel("panel",)
+  tabPanel("Video Duration", includeCSS("styles.css"), algorithm_view),
+  
+  tabPanel("Trending Words",
+           fluidPage(sidebarLayout(position = "right",
+                                   sidebarPanel(style = "background: black",
+                                                wellPanel(style = "background: white",
+                                                          selectInput("variable",
+                                                                             "Select your Variable:",
+                                                                             choices = c("View Count" = "n_plays", "Likes Count" = "n_likes", "Share Count" = "n_shares"),
+                                                                             selected = )),
+                                                DT::dataTableOutput("counttable")),
+                                   
+                                   mainPanel( 
+                                     p(strong(em("\"...It's full of flowers and heart-shaped boxes, and things we're all too young to know.\""), "1.12 - The Book of Love")),
+                                     p("Unsurprisingly there's a lot of love, but what else? Hover over the word cloud below, or search for words in the table to the right:"),
+                                     wordcloud2Output("wordcloud", width = "100%", height = "565px")
+                                   )
+           )
+           )
+  ),
+  
            
 )
 #server stuff goes here 
-server <- function(input, output){
-  #output$testing <- renderText({
-  #return(input$char_name)
-  #})
-
+server <- function(input, output) {
+  song_counts <- reactive({
+    req(input$variable)
+    req(tiktok_bgmSet$song)
+    
+    # Assuming input$variable is a valid column name in tiktok_bgmSet
+    data <- data.frame(word = tiktok_bgmSet$song, freq = tiktok_bgmSet[[input$variable]])
+    
+    # Sorting the data in descending order of the selected variable
+    data <- data %>%
+      arrange(desc(freq))
+    
+    data <- data %>%
+      group_by(word) %>%
+      filter(freq == max(freq)) %>%
+      ungroup()
+  })
+  
+  output$wordcloud <- renderWordcloud2({
+    wordcloud2(song_counts(), size = 2, fontFamily = "Courier", 
+               color = rep_len(pal[2:4], nrow(song_counts())), backgroundColor = "black")
+  })
 }
 #Make the app 
 shinyApp(ui, server)
