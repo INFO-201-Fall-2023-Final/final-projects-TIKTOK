@@ -90,11 +90,7 @@ server <- function(input, output) {
   song_counts <- reactive({
     req(input$variable)
     req(tiktok_bgmSet$song)
-    
-    # Assuming input$variable is a valid column name in tiktok_bgmSet
     data <- data.frame(word = tiktok_bgmSet$song, freq = tiktok_bgmSet[[input$variable]])
-    
-    # Sorting the data in descending order of the selected variable
     data <- data %>%
       arrange(desc(freq))
     
