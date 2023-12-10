@@ -136,7 +136,6 @@ conclusion <-  fluidPage(
     br(),
     br(),
     br(),
-    br(),
     h3("This is where we got our dataset:"),
     h3("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
        TikTok%20Video%20Data%20Collection/sug_users_vids1.csv"),
