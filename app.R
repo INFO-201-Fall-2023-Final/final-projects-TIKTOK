@@ -10,11 +10,11 @@ pal <- c("black", "#00f2ea", "#858B8E", "#ff0050")
 
 tiktok_df$n_hash <- numeric(nrow(tiktok_df))
 for(i in 1:(nrow(tiktok_df)-1)){
-  tiktok_df$n_hash[i+1] <- sum(strsplit(tiktok_df$hashtags[i], "")[[1]] == "'")/2
+  tiktok_df$n_hash[i+1] <- sum(strsplit(tiktok_df$hashtags.x[i], "")[[1]] == "'")/2
 }
 
-min_likes <- min(tiktok_df$video_like_count)
-max_likes <- max(tiktok_df$video_like_count)
+min_likes <- min(tiktok_df$n_likes.x)
+max_likes <- max(tiktok_df$n_likes.x)
 
 
 about_view <-  fluidPage(
@@ -36,8 +36,8 @@ mainPanel(
       comprehensive grasp of the dynamics of addiction and encourage them to consider the role that
       social media plays in their lives by fusing real-world examples with sound statistical analysis."),
   br(),
-  p(paste("Overall out of the 151 tiktok videos we looked at, there are ", like_count, "videos that have over
-            10,000 likes. And in these 151 videos, ", popular_music, "has been used most.")),
+  p(paste("Overall out of the 2432 tiktok videos we looked at, there are ", like_count, "videos that have over
+            10,000 likes. And in these 2432 videos, ", popular_music, "has been used most.")),
   br(),
   
 ),
@@ -83,7 +83,7 @@ wordcloud1 <- fluidPage(
                                                    wellPanel(style = "background: white",
                                                              selectInput("variable",
                                                                          "Select your Variable:",
-                                                                         choices = c("View Count" = "n_plays", "Likes Count" = "n_likes", "Share Count" = "n_shares"),
+                                                                         choices = c("View Count" = "n_plays.x", "Likes Count" = "n_likes.x", "Share Count" = "n_shares.x"),
                                                                          selected = 1)),
                                                    DT::dataTableOutput("counttable")),
                                       
@@ -133,10 +133,24 @@ ui <- navbarPage(inverse = TRUE, "Final Project INFO201",
 #server stuff goes here 
 server <- function(input, output) {
   
+  length_tag <- reactive({
+    tiktok_df[tiktok_df$duration_category == input$length, ]
+  })
+  
+  output$chart <- renderPlot({
+    plot <- ggplot(data = length_tag(), aes(x=video_length.x, y=n_plays.x, color = "#ff0050" )) + 
+      geom_point()+
+      labs(x = "Video Length (Seconds)", y = "View Count",)
+    plot + theme(
+      plot.background = element_rect(fill = "white"), 
+      panel.background = element_rect(fill = "black")
+    )
+  })
+
   song_counts <- reactive({
     req(input$variable)
-    req(tiktok_bgmSet$song)
-    data <- data.frame(word = tiktok_bgmSet$song, freq = tiktok_bgmSet[[input$variable]])
+    req(tiktok_df$song.x)
+    data <- data.frame(word = tiktok_df$song.x, freq = tiktok_df[[input$variable]])
     data <- data %>%
       arrange(desc(freq))
     
@@ -145,11 +159,7 @@ server <- function(input, output) {
       filter(freq == max(freq)) %>%
       ungroup()
   })
-    
-  length_tag <- reactive({
-    tiktok_df[tiktok_df$duration_category == input$length, ]
-  })
-
+  
   output$wordcloud <- renderWordcloud2({
     wordcloud2(song_counts(), size = 2, fontFamily = "Courier", 
                color = rep_len(pal[2:4], nrow(song_counts())), backgroundColor = "black")
@@ -161,35 +171,27 @@ server <- function(input, output) {
                   )
   })
   
-  output$chart <- renderPlot({
-    plot <- ggplot(data = length_tag(), aes(x=video_duration_sec, y=n_plays, color = "#ff0050" )) + 
-      geom_point()+
-      labs(x = "Video Length (Seconds)", y = "View Count",)
-    plot + theme(
-      plot.background = element_rect(fill = "white"), 
-    panel.background = element_rect(fill = "black")
-  )
-  })
+
   
   output$plothash <- renderPlot({
-    ggplot(tiktok_df, aes(x=n_hash, y=n_plays)) +
+    ggplot(tiktok_df, aes(x=n_hash, y=n_plays.x)) +
       geom_point() + 
       ggtitle("Number of Plays vs Number of Hashtags Used") +
       labs(color="Follower Count") + xlab("Number of Hashtags") + ylab("Number of Plays") +
-      geom_hline(yintercept = mean(tiktok_df$n_plays)) + 
+      geom_hline(yintercept = mean(tiktok_df$n_plays.x)) + 
       geom_vline(xintercept = mean(tiktok_df$n_hash, na.rm = T))
   })
   
   tiktok <- reactive({
     
-    tiktok_ <- filter(tiktok_df, video_like_count < max(input$likes)) 
-    tiktok_ <- filter(tiktok_df, video_like_count > min(input$likes))
+    tiktok_ <- filter(tiktok_df, n_likes.x < max(input$likes)) 
+    tiktok_ <- filter(tiktok_df, n_likes.x > min(input$likes))
     tiktok_
   })
   
   output$trending <- renderPlot({
       if (nrow(tiktok()) > 0) {
-        tiktok_ <- data.frame(table(unlist(strsplit(tolower(tiktok()$hashtags), ",")))) %>%top_n(15)
+        tiktok_ <- data.frame(table(unlist(strsplit(tolower(tiktok()$hashtags.x), ",")))) %>%top_n(15)
         colnames(tiktok_) <- c("Hashtag", "Count")
         p <-ggplot(tiktok_[0:15,], aes(Hashtag, Count))
         p + geom_bar(stat = "identity", fill = "#ff0050")

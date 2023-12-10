@@ -1,37 +1,40 @@
 #Sunny, Mars, Tony
 # Final project data wrangling
+
 library(dplyr)
 
-tiktok_transcriptionSet <- read.csv("tiktok_dataset 2.csv")
-tiktok_bgmSet <- read.csv("top_users_vids.csv")
+sug_users_vids <- read.csv('sug_users_vids1.csv')
+top_users_vids <- read.csv('top_users_vids.csv')
 
-# Convert `video_like_count` to numeric, handling `#N/A` values
-tiktok_transcriptionSet <- tiktok_transcriptionSet %>%
-  mutate(video_like_count = as.numeric(replace(video_like_count, video_like_count == "#N/A", NA)))
 
-# Ensure that `video_comment_count` is filtered properly
-tiktok_transcriptionSet <- tiktok_transcriptionSet %>%
-  filter(!is.na(video_like_count), author_ban_status == "active", video_comment_count != 0)
+clean_username <- function(user_name) {
+  user_name <- tolower(trimws(user_name)) 
+  return(user_name)
+}
 
-# Adding new categorical variable
-tiktok_transcriptionSet$duration_category <- cut(tiktok_transcriptionSet$video_duration_sec, 
-                                        breaks = c(0, 15, 60, Inf), 
+sug_users_vids$user_name <- sapply(sug_users_vids$user_name, clean_username)
+top_users_vids$user_name <- sapply(top_users_vids$user_name, clean_username)
+
+sug_users_vids$duration_category <- cut(sug_users_vids$video_length, 
+                                        breaks = c(0, 15, 35, Inf), 
                                         labels = c("Short", "Medium", "Long"), 
                                         right = FALSE)
 
-# Adding new continuous/numerical variable
-tiktok_transcriptionSet$engagement_rate <- (as.numeric(tiktok_transcriptionSet$video_like_count) +
-                                              as.numeric(tiktok_transcriptionSet$video_comment_count)) /
-                                              as.numeric(tiktok_transcriptionSet$video_view_count)
+top_users_vids_unique <- top_users_vids %>%
+  group_by(user_name) %>%
+  summarize(across(everything(), first))
 
-tiktok_bgmSet <- select(tiktok_bgmSet, user_name, video_length, n_likes, n_shares, n_comments, n_plays, hashtags, song)
+tiktok_df <- left_join(sug_users_vids, top_users_vids_unique, by = "user_name")
 
-tiktok_df <- left_join(tiktok_transcriptionSet, tiktok_bgmSet, by = c("video_like_count" = "n_likes"))
-tiktok_df <- filter(tiktok_df, !is.na(song))
+tiktok_df <- filter(tiktok_df, !is.na(user_name))
 
-write.csv(tiktok_df, "tiktok.csv", row.names=TRUE)
+tiktok_df <- filter(tiktok_df, !is.na(video_length.x), !is.na(video_length.y))
 
-like_count <- nrow(tiktok_df[tiktok_df$video_like_count > 10000, ])
 
-popular_music <- names(which.max(table(tiktok_bgmSet$song)))
+
+write.csv(tiktok_df, 'tiktok_df.csv', row.names = FALSE)
+
+like_count <- nrow(tiktok_df[tiktok_df$n_likes.x > 10000, ])
+
+popular_music <- names(which.max(table(top_users_vids$song)))
 print(paste("The most popular music is:", popular_music))
