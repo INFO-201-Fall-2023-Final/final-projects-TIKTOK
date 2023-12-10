@@ -235,8 +235,7 @@ server <- function(input, output) {
   
   tiktok <- reactive({
     
-    tiktok_ <- filter(tiktok_df, n_likes.x < max(input$likes)) 
-    tiktok_ <- filter(tiktok_df, n_likes.x > min(input$likes))
+    tiktok_ <- filter(tiktok_df, n_likes.x < max(input$likes), n_likes.x > min(input$likes))
     tiktok_
   })
   

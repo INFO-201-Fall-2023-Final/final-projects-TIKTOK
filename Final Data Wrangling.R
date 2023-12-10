@@ -16,7 +16,7 @@ sug_users_vids$user_name <- sapply(sug_users_vids$user_name, clean_username)
 top_users_vids$user_name <- sapply(top_users_vids$user_name, clean_username)
 
 sug_users_vids$duration_category <- cut(sug_users_vids$video_length, 
-                                        breaks = c(0, 15, 35, Inf), 
+                                        breaks = c(0, 15, 35, 60), 
                                         labels = c("Short", "Medium", "Long"), 
                                         right = FALSE)
 
