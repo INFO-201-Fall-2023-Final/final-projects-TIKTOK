@@ -8,6 +8,15 @@ source("Final Data Wrangling.R")
 
 pal <- c("black", "#00f2ea", "#858B8E", "#ff0050")
 
+tiktok_df$n_hash <- numeric(nrow(tiktok_df))
+for(i in 1:(nrow(tiktok_df)-1)){
+  tiktok_df$n_hash[i+1] <- sum(strsplit(tiktok_df$hashtags[i], "")[[1]] == "'")/2
+}
+
+min_likes <- min(tiktok_df$video_like_count)
+max_likes <- max(tiktok_df$video_like_count)
+
+
 about_view <-  fluidPage(
   titlePanel("How TikTok's background sound affect production traffic"),
   br(),
@@ -17,6 +26,7 @@ tags$style(HTML("
             # background-image: url('https://miro.medium.com/v2/resize:fit:1400/1*XnhCJ4DuRt_7oqwUiwjWPA.png');
             color: black;
             }")),
+
 
 mainPanel(
   h3("Introduction"),
@@ -64,7 +74,11 @@ videolength_view <- fluidPage(
            )
 )
 
-wordcloud1 <- fluidPage(sidebarLayout(position = "right",
+wordcloud1 <- fluidPage(
+  titlePanel(
+    h1("What songs gets the most viewd?")
+  ),
+          sidebarLayout(position = "right",
                                       sidebarPanel(style = "background: black",
                                                    wellPanel(style = "background: white",
                                                              selectInput("variable",
@@ -79,9 +93,29 @@ wordcloud1 <- fluidPage(sidebarLayout(position = "right",
                                        It is important to take note that these songs are only including song and not the original audio of the video itself."),
                                         wordcloud2Output("wordcloud", width = "100%", height = "570px")
                                       )
-)
+          )
 )
 
+hashtag_view <- fluidPage(
+  titlePanel(
+    h1("What hashtags gets the most viewd and liked?")
+  ),
+  sidebarLayout(position = "right",
+                sidebarPanel(style = "background: black",
+                             wellPanel(style = "background: white",
+                                       sliderInput("likes",
+                                                   label = "Number of Likes",
+                                                   min = min_likes,
+                                                   max = max_likes,
+                                                   value = c(min_likes, max_likes)))
+                             ),
+                mainPanel(
+                  p("Hashtags"),
+                  plotOutput(outputId = "plothash"),
+                  plotOutput(outputId = "trending")
+              )
+  )
+)
 
 
 
@@ -90,7 +124,9 @@ ui <- navbarPage(inverse = TRUE, "Final Project INFO201",
   
   tabPanel("Video Duration", includeCSS("styles.css"), videolength_view),
   
-  tabPanel("Trending Songs", includeCSS("styles.css"), wordcloud1)
+  tabPanel("Trending Songs", includeCSS("styles.css"), wordcloud1),
+  
+  tabPanel("Hashtag", includeCSS("styles.css"), hashtag_view)
            
            
 )
@@ -135,6 +171,30 @@ server <- function(input, output) {
   )
   })
   
+  output$plothash <- renderPlot({
+    ggplot(tiktok_df, aes(x=n_hash, y=n_plays)) +
+      geom_point() + 
+      ggtitle("Number of Plays vs Number of Hashtags Used") +
+      labs(color="Follower Count") + xlab("Number of Hashtags") + ylab("Number of Plays") +
+      geom_hline(yintercept = mean(tiktok_df$n_plays)) + 
+      geom_vline(xintercept = mean(tiktok_df$n_hash, na.rm = T))
+  })
+  
+  tiktok <- reactive({
+    
+    tiktok_ <- filter(tiktok_df, video_like_count < max(input$likes)) 
+    tiktok_ <- filter(tiktok_df, video_like_count > min(input$likes))
+    tiktok_
+  })
+  
+  output$trending <- renderPlot({
+      if (nrow(tiktok()) > 0) {
+        tiktok_ <- data.frame(table(unlist(strsplit(tolower(tiktok()$hashtags), ",")))) %>%top_n(15)
+        colnames(tiktok_) <- c("Hashtag", "Count")
+        p <-ggplot(tiktok_[0:15,], aes(Hashtag, Count))
+        p + geom_bar(stat = "identity", fill = "#ff0050")
+      }
+  })
 }
 #Make the app 
 shinyApp(ui, server)
