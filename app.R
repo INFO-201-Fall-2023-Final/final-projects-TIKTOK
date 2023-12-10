@@ -14,26 +14,26 @@ about_view <-  fluidPage(
 
 tags$style(HTML("
     h2 {
-            # background-image: url('https://miro.medium.com/v2/resize:fit:1400/1*XnhCJ4DuRt_7oqwUiwjWPA.png');
             color: black;
             }")),
 
 mainPanel(
-  h3("Introduction"),
-  p("Tiktok has become one of the most young people's social media, most youth even addict to it.
+  h3("Introduction", style = "background-color: #D3D3D3;"),
+  h4("Nowadays, examining TikTok addiction behavior is necessary because TikTok is one of the fastest-growing apps, 
+      surpassing other social media platforms in terms of user numbers and usage intensity. Meanwhile, it 
+      has the most advanced algorithm system, especially in terms of participation, content, and types of 
+      interaction, which makes the addiction problem of TikTok more severe than the other popular social media.
       We will measure how information and system quality affect addictive behavior by thoroughly 
-      examining user engagement patterns and content trends. Our goal is to educate readers with a 
-      comprehensive grasp of the dynamics of addiction and encourage them to consider the role that
-      social media plays in their lives by fusing real-world examples with sound statistical analysis."),
+      examining user engagement patterns and content trends."),
   br(),
-  p(paste("Overall out of the 151 tiktok videos we looked at, there are ", like_count, "videos that have over
+  h4(paste("Overall out of the 151 tiktok videos we looked at, there are ", like_count, "videos that have over
             10,000 likes. And in these 151 videos, ", popular_music, "has been used most.")),
   br(),
   
 ),
 div(style = "float: right; margin-left: 50px;",
     tags$img(src = "https://miro.medium.com/v2/resize:fit:1400/1*XnhCJ4DuRt_7oqwUiwjWPA.png", 
-             width = 410, height = 260, class = "right-image")),
+             width = 610, height = 360, class = "right-image")),
                         
 )
 
@@ -79,7 +79,51 @@ wordcloud1 <- fluidPage(sidebarLayout(position = "right",
                                        It is important to take note that these songs are only including song and not the original audio of the video itself."),
                                         wordcloud2Output("wordcloud", width = "100%", height = "570px")
                                       )
+),
 )
+conclusion <-  fluidPage(
+  titlePanel("Conclusion"),
+  br(),
+  
+  tags$style(HTML("
+    h2 {
+            color: black;
+            }")),
+  
+  mainPanel(
+    h2("Summary", style = "background-color: #D3D3D3;"),
+    br(),
+    h3("Our goal is to educate readers with a comprehensive grasp of the dynamics of 
+    addiction and encourage them to consider the role that social media plays in their
+       lives by fusing real-world examples with sound statistical analysis."),
+    br(),
+    br(),
+    br(),
+    br(),
+    br(),
+    h3("This is where we got our dataset:"),
+    h3("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
+       TikTok%20Video%20Data%20Collection/sug_users_vids1.csv"),
+    h3("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
+       TikTok%20Video%20Data%20Collection/top_users_vids.csv"),
+    br(),
+    br(),
+    br(),
+    br(),
+    br(),
+    h4(em("Thank you for your reading!"))
+    
+    
+  ),
+  
+  div(style = "float: right; margin-left: 40px;",
+      tags$img(src = "https://i.imgflip.com/4gu33f.jpg",
+               width = 400, height = 572, class = "right-image")
+  ),
+  div(style = "position: relative; height: 700px;",  # Adjust height as needed
+      div(h3(em("From Tony Sun, Sunny Yang, Mars Ouyang.")), 
+          style = "position: absolute; bottom: 10px; right: 10px;")
+  ),
 )
 
 
@@ -90,9 +134,10 @@ ui <- navbarPage(inverse = TRUE, "Final Project INFO201",
   
   tabPanel("Video Duration", includeCSS("styles.css"), videolength_view),
   
-  tabPanel("Trending Songs", includeCSS("styles.css"), wordcloud1)
-           
-           
+  tabPanel("Trending Songs", includeCSS("styles.css"), wordcloud1),
+  
+  tabPanel("Conclusion", includeCSS("styles.css"), conclusion)
+         
 )
 #server stuff goes here 
 server <- function(input, output) {
