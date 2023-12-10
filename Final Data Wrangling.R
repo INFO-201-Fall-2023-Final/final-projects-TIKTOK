@@ -30,7 +30,10 @@ tiktok_df <- filter(tiktok_df, !is.na(user_name))
 
 tiktok_df <- filter(tiktok_df, !is.na(video_length.x), !is.na(video_length.y))
 
+song_y_index <- which(names(tiktok_df) == "song.y")
 
+# Keep only columns up to and including 'song.y'
+tiktok_df <- tiktok_df[, 1:song_y_index]
 
 write.csv(tiktok_df, 'tiktok_df.csv', row.names = FALSE)
 
