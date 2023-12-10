@@ -162,9 +162,9 @@ server <- function(input, output) {
   })
   
   output$chart <- renderPlot({
-    plot <- ggplot(data = length_tag(), aes(x=video_like_count, y=n_plays, color = "#ff0050" )) + 
+    plot <- ggplot(data = length_tag(), aes(x=video_duration_sec, y=n_plays, color = "#ff0050" )) + 
       geom_point()+
-      labs(x = "Like Count", y = "View Count",)
+      labs(x = "Video Length (Seconds)", y = "View Count",)
     plot + theme(
       plot.background = element_rect(fill = "white"), 
     panel.background = element_rect(fill = "black")
