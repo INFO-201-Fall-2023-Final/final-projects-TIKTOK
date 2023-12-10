@@ -16,7 +16,7 @@ sug_users_vids$user_name <- sapply(sug_users_vids$user_name, clean_username)
 top_users_vids$user_name <- sapply(top_users_vids$user_name, clean_username)
 
 sug_users_vids$duration_category <- cut(sug_users_vids$video_length, 
-                                        breaks = c(0, 15, 35, Inf), 
+                                        breaks = c(0, 15, 35, 60), 
                                         labels = c("Short", "Medium", "Long"), 
                                         right = FALSE)
 
@@ -30,10 +30,6 @@ tiktok_df <- filter(tiktok_df, !is.na(user_name))
 
 tiktok_df <- filter(tiktok_df, !is.na(video_length.x), !is.na(video_length.y))
 
-song_y_index <- which(names(tiktok_df) == "song.y")
-
-# Keep only columns up to and including 'song.y'
-tiktok_df <- tiktok_df[, 1:song_y_index]
 
 
 write.csv(tiktok_df, 'tiktok_df.csv', row.names = FALSE)
