@@ -6,8 +6,10 @@ library(shiny)
 
 source("Final Data Wrangling.R")
 
+#Color Pallets
 pal <- c("black", "#00f2ea", "#858B8E", "#ff0050")
 
+#Data Set Up
 tiktok_df$n_hash <- numeric(nrow(tiktok_df))
 for(i in 1:(nrow(tiktok_df)-1)){
   tiktok_df$n_hash[i+1] <- sum(strsplit(tiktok_df$hashtags.x[i], "")[[1]] == "'")/2
@@ -16,7 +18,7 @@ for(i in 1:(nrow(tiktok_df)-1)){
 min_likes <- min(tiktok_df$n_likes.x)
 max_likes <- max(tiktok_df$n_likes.x)
 
-
+#Introduction Panel
 about_view <-  fluidPage(
   titlePanel("How TikTok's background sound affect production traffic"),
   br(),
@@ -47,7 +49,7 @@ about_view <-  fluidPage(
                width = 610, height = 360, class = "right-image")),
 )
 
-
+#Videolength Panel
 videolength_view <- fluidPage(
   titlePanel(
     h1("What video length gets promoted the most by Tiktok?"),
@@ -74,6 +76,7 @@ videolength_view <- fluidPage(
   )
 )
 
+#Trending Song Panel
 wordcloud1 <- fluidPage(
   titlePanel(
     h1("What songs gets the most viewd?")
@@ -96,6 +99,7 @@ wordcloud1 <- fluidPage(
   )
 )
 
+#Hashtags Panel
 hashtag_view <- fluidPage(
   titlePanel(
     h1("What hashtags gets the most viewd and liked?")
@@ -117,6 +121,7 @@ hashtag_view <- fluidPage(
   )
 )
 
+#Conclusion Panel
 conclusion <-  fluidPage(
   titlePanel("Conclusion"),
   br(),
@@ -155,13 +160,13 @@ conclusion <-  fluidPage(
       tags$img(src = "https://i.imgflip.com/4gu33f.jpg",
                width = 400, height = 572, class = "right-image")
   ),
-  div(style = "position: relative; height: 700px;",  # Adjust height as needed
+  div(style = "position: relative; height: 700px;",  
       div(h3(em("From Tony Sun, Sunny Yang, Mars Ouyang.")), 
           style = "position: absolute; bottom: 10px; right: 10px;")
   ),
 )
 
-
+#UI
 ui <- navbarPage(inverse = TRUE, "Final Project INFO201",
                  tabPanel("Intro", includeCSS("styles.css"), about_view),
                  
@@ -174,9 +179,10 @@ ui <- navbarPage(inverse = TRUE, "Final Project INFO201",
                  tabPanel("Conclusion", includeCSS("styles.css"), conclusion)
                  
 )
-#server stuff goes here 
+#Server
 server <- function(input, output) {
-  
+
+  #Video Length ScatterPlot output
   length_tag <- reactive({
     tiktok_df[tiktok_df$duration_category == input$length, ]
   })
@@ -191,6 +197,7 @@ server <- function(input, output) {
     )
   })
   
+  #Trending Song Wordcloud & Table output
   song_counts <- reactive({
     req(input$variable)
     req(tiktok_df$song.x)
@@ -216,7 +223,7 @@ server <- function(input, output) {
   })
   
   
-  
+  #Plots on hashtags vs likes
   output$plothash <- renderPlot({
     ggplot(tiktok_df, aes(x=n_hash, y=n_plays.x)) +
       geom_point() + 
