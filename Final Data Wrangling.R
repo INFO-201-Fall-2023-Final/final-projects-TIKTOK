@@ -37,7 +37,12 @@ tiktok_df <- tiktok_df[, 1:song_y_index]
 
 write.csv(tiktok_df, 'tiktok_df.csv', row.names = FALSE)
 
-like_count <- nrow(tiktok_df[tiktok_df$n_likes.x > 10000, ])
+like_count <- nrow(tiktok_df[tiktok_df$n_likes.x > 100000, ])
 
 popular_music <- names(which.max(table(top_users_vids$song)))
 print(paste("The most popular music is:", popular_music))
+
+duration_Longvideo <- nrow(tiktok_df[tiktok_df$duration_category == "Long", ])
+print(paste("The most popular music is:", duration_Longvideo))
+
+hasTag_exised <- nrow(tiktok_df[tiktok_df$hashtags.x != "[]", ])

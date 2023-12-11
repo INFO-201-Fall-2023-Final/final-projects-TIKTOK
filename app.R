@@ -20,7 +20,8 @@ max_views <- max(tiktok_df$n_plays.x)
 
 #Introduction Panel
 about_view <-  fluidPage(
-  titlePanel("How TikTok's background sound affect production traffic"),
+  titlePanel("The Addiction Behavior of Short-form Video App TikTok: 
+                The Information Quality and System Quality Perspective"),
   br(),
   
   tags$style(HTML("
@@ -29,22 +30,23 @@ about_view <-  fluidPage(
             color: black;
             }")),
   
-  
+      
+
   mainPanel(
     h3("Introduction", style = "background-color: #D3D3D3;"),
-    h4("Nowadays, examining TikTok addiction behavior is necessary because TikTok is one of the fastest-growing apps, 
-      surpassing other social media platforms in terms of user numbers and usage intensity. Meanwhile, it 
+    h4("Nowadays, TikTok is one of the fastest-growing apps, surpassing other social media platforms 
+      in terms of user numbers and usage intensity. Meanwhile, it 
       has the most advanced algorithm system, especially in terms of participation, content, and types of 
-      interaction, which makes the addiction problem of TikTok more severe than the other popular social media.
+      interaction, which makes the addiction problem of TikTok more severe than the other social media.
       We will measure how information and system quality affect addictive behavior by thoroughly 
       examining user engagement patterns and content trends."),
     br(),
-    h4(paste("Overall out of the 151 tiktok videos we looked at, there are ", like_count, "videos that have over
-            10,000 likes. And in these 151 videos, ", popular_music, "has been used most.")),
-    br(),
-    
+    h4(paste(" Given that among the 2,432 TikTok users we studied, ", like_count, " videos have garnered over 10,000 
+              likes, and the most frequently used audio is the ", popular_music, "has been used most. Additionally,
+             ", duration_Longvideo, "of these videos have a longer duration, and ", hasTag_exised, "include hashtags. We will concentrate our 
+             investigation on these three aspects to better understand the factors driving addictive behaviors.")),
   ),
-  div(style = "float: right; margin-left: 50px;",
+  div(style = "float: right; margin-right: 30px;",
       tags$img(src = "https://miro.medium.com/v2/resize:fit:1400/1*XnhCJ4DuRt_7oqwUiwjWPA.png", 
                width = 610, height = 360, class = "right-image")),
 )
@@ -54,8 +56,8 @@ videolength_view <- fluidPage(
   titlePanel(
     h1("What video length gets promoted the most by Tiktok?"),
   ),
-      sidebarLayout(
-      sidebarPanel( 
+  sidebarLayout(
+    sidebarPanel( 
       h2("Control Panel"),
       p("Short: Less than 15 seconds"),
       p("Medium: Between 15 and 35 seconds"),
@@ -170,17 +172,24 @@ conclusion <-  fluidPage(
   mainPanel(
     h2("Summary", style = "background-color: #D3D3D3;"),
     br(),
-    h3("Our goal is to educate readers with a comprehensive grasp of the dynamics of 
+    h4("Our goal is to educate readers with a comprehensive grasp of the dynamics of 
     addiction and encourage them to consider the role that social media plays in their
        lives by fusing real-world examples with sound statistical analysis."),
     br(),
+    h4("In conclusion, the preceding discussion underscores the often overlooked importance
+       of music and sound design in TikTok. The platform's straightforward interface, aimed
+       at immersing users in passive engagement with recommended videos, plays a pivotal role
+       in fostering addictive behaviors. Users can seamlessly swipe through short videos, 
+       unintentionally prolonging their time on TikTok. Furthermore, the brevity of videos and
+       the strategic use of hashtags enhance the quality of information delivered by the algorithm,
+       further fueling user addiction to TikTok. This interplay underscores a symbiotic relationship
+       between TikTok addiction and algorithmic optimization, highlighting the platform's unique 
+       ability to captivate its users."),
     br(),
-    br(),
-    br(),
-    h3("This is where we got our dataset:"),
-    h3("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
+    h4("This is where we got our dataset:"),
+    h4("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
        TikTok%20Video%20Data%20Collection/sug_users_vids1.csv"),
-    h3("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
+    h4("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
        TikTok%20Video%20Data%20Collection/top_users_vids.csv"),
     br(),
     br(),
@@ -217,7 +226,7 @@ ui <- navbarPage(inverse = TRUE, "Final Project INFO201",
 )
 #Server
 server <- function(input, output) {
-
+  
   #Video Length ScatterPlot output
   length_tag <- function(tags){
     vlength <- filter(tiktok_df, duration_category == tags)
@@ -236,7 +245,7 @@ server <- function(input, output) {
       axis.text = element_text(size = 12, face = "bold")
     )
   })
-
+  
   average_view_count <- reactive({
     mean(length_tag(input$length_cat)$n_plays.x)
   })
