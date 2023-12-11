@@ -33,22 +33,33 @@ about_view <-  fluidPage(
       
 
   mainPanel(
-    h3("Introduction", style = "background-color: #D3D3D3;"),
-    h4("Nowadays, TikTok is one of the fastest-growing apps, surpassing other social media platforms 
+    h2("Introduction", style = "background-color: #D3D3D3;"),
+    p("Nowadays, TikTok is one of the fastest-growing apps, surpassing other social media platforms 
       in terms of user numbers and usage intensity. Meanwhile, it 
       has the most advanced algorithm system, especially in terms of participation, content, and types of 
       interaction, which makes the addiction problem of TikTok more severe than the other social media.
       We will measure how information and system quality affect addictive behavior by thoroughly 
       examining user engagement patterns and content trends."),
     br(),
+    h3("The Algorithm"),
+    p("The recommendation algorithm used in tiktok caters to users' needs by using a hierarchical interest 
+      label tree, user persona, and partitioned data buckets strategy to recommend accurate and personalized content. 
+      The algorithm also uses collaborative filtering and low-cost interaction design to create traps for users, contributing to addiction."),
+    h3("Information Quality and System Quality"),
+    p("There is a closed-loop relationship between Tiktok addiction and algorithm optimization. 
+      The more frequently users use tiktok, the more accurate the algorithm becomes, potentially exacerbating addiction.
+      In this project, we use concepts of information quality and system quality, which could be traced back to DeLone and McLean’s Information Systems Success Model,
+      to look at 3 aspects of tiktok videos and see if they qualify as a measure to see why tiktok are so addictive."),
+    p("We will be looking at video length, music, and hashtags in tiktok videos.", style = "font-weight: bold"),
+    br(),
     h4(paste(" Given that among the 2,432 TikTok users we studied, ", like_count, " videos have garnered over 10,000 
               likes, and the most frequently used audio is the ", popular_music, "has been used most. Additionally,
              ", duration_Longvideo, "of these videos have a longer duration, and ", hasTag_exised, "include hashtags. We will concentrate our 
              investigation on these three aspects to better understand the factors driving addictive behaviors.")),
   ),
-  div(style = "float: right; margin-right: 30px;",
+  div(style = "float: right; margin-right: 1px;",
       tags$img(src = "https://miro.medium.com/v2/resize:fit:1400/1*XnhCJ4DuRt_7oqwUiwjWPA.png", 
-               width = 610, height = 360, class = "right-image")),
+               width = 450, height = 340, class = "right-image")),
 )
 
 #Videolength Panel
@@ -170,21 +181,23 @@ conclusion <-  fluidPage(
             }")),
   
   mainPanel(
-    h2("Summary", style = "background-color: #D3D3D3;"),
+    h2("Takeaways", style = "background-color: #D3D3D3;"),
     br(),
-    h4("Our goal is to educate readers with a comprehensive grasp of the dynamics of 
-    addiction and encourage them to consider the role that social media plays in their
-       lives by fusing real-world examples with sound statistical analysis."),
-    br(),
-    h4("In conclusion, the preceding discussion underscores the often overlooked importance
-       of music and sound design in TikTok. The platform's straightforward interface, aimed
-       at immersing users in passive engagement with recommended videos, plays a pivotal role
+    p("In conclusion, we discussed three aspect of tiktok videos, the often overlooked importance
+       of music and sound design. the brevity of videos and the strategic use of hashtags enhance the 
+       quality of information delivered by the algorithm. These three aspects, and the platform's straightforward 
+       interface, aimed at immersing users in passive engagement with recommended videos, plays a pivotal role
        in fostering addictive behaviors. Users can seamlessly swipe through short videos, 
-       unintentionally prolonging their time on TikTok. Furthermore, the brevity of videos and
-       the strategic use of hashtags enhance the quality of information delivered by the algorithm,
-       further fueling user addiction to TikTok. This interplay underscores a symbiotic relationship
+       unintentionally prolonging their time on TikTok. This interplay underscores a symbiotic relationship
        between TikTok addiction and algorithmic optimization, highlighting the platform's unique 
        ability to captivate its users."),
+    br(),
+    h3("Tiktok addition can be big problems that takes way too much time form our life.
+       so we want to educate the readers to better understand why tiktok is so addictive. "),
+    br(),
+    p("Our goal here is to educate readers with a comprehensive grasp of the dynamics of 
+    addiction and encourage them to consider the role that social media plays in their
+       lives by fusing real-world examples with sound statistical analysis."),
     br(),
     h4("This is where we got our dataset:"),
     h4("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
