@@ -83,7 +83,7 @@ videolength_view <- fluidPage(
     ),
     mainPanel(
       br(),
-      h4("Acoordin to the research done by Yao Qin, Bahiyah Omar and Alessandro Musetti. The timeliness and conciceness 
+      h4("According to the research done by Yao Qin, Bahiyah Omar and Alessandro Musetti. The timeliness and conciceness 
             are importnant measuere of the information quality in Tiktok, and these are often measured by video length. What video length
             gets the most viewed on Tiktok? How does these aspects of videos contribute to addiction in tiktok?" , style="font-style: italic; font-weight: bold"
       ),
