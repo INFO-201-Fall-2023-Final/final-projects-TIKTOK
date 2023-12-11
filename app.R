@@ -50,12 +50,11 @@ about_view <-  fluidPage(
       The more frequently users use tiktok, the more accurate the algorithm becomes, potentially exacerbating addiction.
       In this project, we use concepts of information quality and system quality, which could be traced back to DeLone and McLean’s Information Systems Success Model,
       to look at 3 aspects of tiktok videos and see if they qualify as a measure to see why tiktok are so addictive."),
-    p("We will be looking at video length, music, and hashtags in tiktok videos.", style = "font-weight: bold"),
-    br(),
-    h4(paste(" Given that among the 2,432 TikTok users we studied, ", like_count, " videos have garnered over 10,000 
+    p(paste("Given that among the 2,432 TikTok users we studied, ", like_count, " videos have garnered over 10,000 
               likes, and the most frequently used audio is the ", popular_music, "has been used most. Additionally,
-             ", duration_Longvideo, "of these videos have a longer duration, and ", hasTag_exised, "include hashtags. We will concentrate our 
-             investigation on these three aspects to better understand the factors driving addictive behaviors.")),
+             ", duration_Longvideo, "of these videos have a longer duration, and ", hasTag_exised, "include hashtags.")),
+      
+    p("We will be looking at video length, music, and hashtags in tiktok videos.", style = "font-weight: bold")
   ),
   div(style = "float: right; margin-right: 1px;",
       tags$img(src = "https://miro.medium.com/v2/resize:fit:1400/1*XnhCJ4DuRt_7oqwUiwjWPA.png", 
@@ -193,18 +192,16 @@ conclusion <-  fluidPage(
        ability to captivate its users."),
     br(),
     h3("Tiktok addition can be big problems that takes way too much time form our life.
-       so we want to educate the readers to better understand why tiktok is so addictive. "),
+       so we want to educate the readers to better understand why tiktok is so addictive and 
+       encourage them to consider the role that social media plays in their
+       lives."),
     br(),
-    p("Our goal here is to educate readers with a comprehensive grasp of the dynamics of 
-    addiction and encourage them to consider the role that social media plays in their
-       lives by fusing real-world examples with sound statistical analysis."),
     br(),
-    h4("This is where we got our dataset:"),
-    h4("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
+    p("This is where we got our dataset:"),
+    p("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
        TikTok%20Video%20Data%20Collection/sug_users_vids1.csv"),
-    h4("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
+    p("https://github.com/datares/TikTok_Famous/blob/main/Datasets/
        TikTok%20Video%20Data%20Collection/top_users_vids.csv"),
-    br(),
     br(),
     br(),
     br(),
