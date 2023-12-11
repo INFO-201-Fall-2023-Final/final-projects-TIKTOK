@@ -15,8 +15,8 @@ for(i in 1:(nrow(tiktok_df)-1)){
   tiktok_df$n_hash[i+1] <- sum(strsplit(tiktok_df$hashtags.x[i], "")[[1]] == "'")/2
 }
 
-min_likes <- min(tiktok_df$n_likes.x)
-max_likes <- max(tiktok_df$n_likes.x)
+min_views <- min(tiktok_df$n_plays.x)
+max_views <- max(tiktok_df$n_plays.x)
 
 #Introduction Panel
 about_view <-  fluidPage(
@@ -54,24 +54,42 @@ videolength_view <- fluidPage(
   titlePanel(
     h1("What video length gets promoted the most by Tiktok?"),
   ),
-  sidebarLayout(
-    sidebarPanel( 
-      h2("Choose viedo length"),
+      sidebarLayout(
+      sidebarPanel( 
+      h2("Control Panel"),
+      p("Short: Less than 15 seconds"),
+      p("Medium: Between 15 and 35 seconds"),
+      p("Long: More than 35 seconds"),
       selectInput(
-        inputId = "length",
-        label = "Different length of a video",
+        inputId = "length_cat",
+        label = "Choose video Length",
         choices = tiktok_df$duration_category,
         selected = 1
-      )
+      ),
+      span(textOutput("average_view_count"), style="color:#00f2ea;
+                                                    font-size: 20px;
+                                                    font-style: italic;"),
+      br(),
+      h2("Summary", style="color:#ff0050; font-style: italic;"),
+      p("Based on the average view count and general trend in the graph, we see that Short length video, which are less than 15 seconds gets the most average view with around 
+        7654364.97 views. Although this could due to that large portion of the data are in the short length categories, but it shows that the algorithm of tiktok promotes short videos 
+        their users. Tiktok has a large viewer base of adolescents and young adults with short attention span, Based on the data statistics of TikTok penetration in China, the largest 
+        group of users is 6–17 years old, accounting for 31.59%, followed by 18–24 years old (30.14%), 25–30 years old (20.85%), 31–35 years old (8.66%), and over 35 years old (8.76%) (Mou, 2020).
+        Video creators on Tiktok also adapt to the algorithm, produce more high quality short length video and making it so much easier for their audience to lost track of time while swiping through 
+        videos. This has raised serious concern as TikTok addiction affected young people seriously. They are naive and easily absorbed when exposed to a wide variety of short video contents."),
+      
     ),
     mainPanel(
-      p("Acoordin to the research done by Yao Qin, Bahiyah Omar and Alessandro Musetti. The timeliness and conciceness 
-            are importnant measuere of the information quality in Tiktok, and these are often measured by video length. What length
-            of the videos get promoted by Tiktok the most? And how well does these promoted video do in terms of their likes count?
-      "),
       br(),
-      plotOutput(outputId = "chart"),
-      
+      h4("Acoordin to the research done by Yao Qin, Bahiyah Omar and Alessandro Musetti. The timeliness and conciceness 
+            are importnant measuere of the information quality in Tiktok, and these are often measured by video length. What video length
+            gets the most viewed on Tiktok? How does these aspects of videos contribute to addiction in tiktok?" , style="font-style: italic; font-weight: bold"
+      ),
+      br(),
+      h3("<- Choose a video length categories to see what happens to the view count", style="color:#ff0050; font-style: italic;"),
+      br(),
+      plotOutput("length_chart"),
+      br(),
     )
   )
 )
@@ -79,10 +97,12 @@ videolength_view <- fluidPage(
 #Trending Song Panel
 wordcloud1 <- fluidPage(
   titlePanel(
-    h1("What songs gets the most viewd?")
+    h1("How does song contributes to user addiction?")
   ),
   sidebarLayout(position = "right",
-                sidebarPanel(style = "background: black",
+                sidebarPanel(style = "background: white",
+                             h2("Search your favourite song!", style = "color:#00f2ea; font-style: italic"),
+                             h3("See if it is used in one of the top trending tiktok!", style = "color:#00f2ea;"),
                              wellPanel(style = "background: white",
                                        selectInput("variable",
                                                    "Select your Variable:",
@@ -91,10 +111,15 @@ wordcloud1 <- fluidPage(
                              DT::dataTableOutput("counttable")),
                 
                 mainPanel( 
-                  p(strong(em("What are the musics that used in the top viewed, top liked and top shared music on TIKTOK?"), )),
-                  p("These are some of the music that are used in the most viewed, most liked and shared video posted on tiktok, as we can see, views sometimes don't correlate with amount of likes and shares.
-                                       It is important to take note that these songs are only including song and not the original audio of the video itself."),
-                  wordcloud2Output("wordcloud", width = "100%", height = "570px")
+                  p("What are the musics that used in the top viewed, top liked and top shared music on TIKTOK?", style = "color:#ff0050; font-weight: bold"),
+                  p("These are some of the music that are used in the most viewed, most liked and shared video posted on tiktok, as we can see, views sometimes don't correlate with amount of likes and share
+                    in terms of the music use, and you may think it is not necessary to examine the music. And this is where you are wrong! In fact, the music and sound choice made in the making of these video are one of the most aspect contributes
+                    to tiktok addiction. These factors are often overlooked when determining the quality of a tiktok video."),
+                  wordcloud2Output("wordcloud", width = "102%", height = "530px"),
+                  h2("Summary", style = "color:#ff0050; font-style: italic"),
+                  p("The importance of music and sound design in a tiktok is oftern overlooked. In the context of TikTok, it had a simple operating system. The interaction was designed for immersive experiences and aimed to keep users in an extremely
+                  passive state to accept the recommended videos. Users only needed to swipe up the screen with low effort to glance at short videos, therefore, indulging TikTok and extending the usage time unconsciously. The combination of visual, sound
+                  and social aspect made TikTok more immersive. Thus the information quality makes has a positive influence on user's enjoyment and concentration.")
                 )
   )
 )
@@ -102,21 +127,32 @@ wordcloud1 <- fluidPage(
 #Hashtags Panel
 hashtag_view <- fluidPage(
   titlePanel(
-    h1("What hashtags gets the most viewd and liked?")
+    h1("How does hashtags has to do with user addiction?")
   ),
   sidebarLayout(position = "right",
-                sidebarPanel(style = "background: black",
+                sidebarPanel(style = "background: white",
                              wellPanel(style = "background: white",
-                                       sliderInput("likes",
-                                                   label = "Number of Likes",
-                                                   min = min_likes,
-                                                   max = max_likes,
-                                                   value = c(min_likes, max_likes)))
+                                       sliderInput("views",
+                                                   label = "Number of views",
+                                                   min = min_views,
+                                                   max = max_views,
+                                                   value = c(min_views, max_views))),
+                             p("This is a graph of number of views vs number of hashtags used in a video:"),
+                             plotOutput(outputId = "avg_hash"),
+                             p("We can see that number of hashtags is not a strong factor effecting the views, it's mostly the hashtag itself effecting the views.")
                 ),
                 mainPanel(
-                  p("Hashtags"),
-                  plotOutput(outputId = "plothash"),
-                  plotOutput(outputId = "trending")
+                  p("What hashtags gets the most liked?", style = "color:#ff0050; font-weight: bold"),
+                  p("Hashtags, one of the most important attribute of a tiktok video, works as a keyword for a video that help TikTok's algorithm show videos to your target audience, in addition to captions and copy.
+                    They are perfect examples of the information quality of tiktok. The algorithm utilize the hashtags to put the recommended video to the users. Here are the hashtags that used in some of the most viewed 
+                    tiktok in 2021." ),
+                  h3("You can use the slider at the right to set a view count range, and see what are the hashtags used in these videos.", style = "color:#00f2ea; font-style: italic"),
+                  plotOutput(outputId = "trending"),
+                  h2("Summary", style = "color:#ff0050; font-style: italic"),
+                  p("For the content creators, the hashtags are great to boost their video's views count, but for the users, hashtags are tools for the algorithm to give them what they enjoy to watch. 
+                    Hashtags further strength the information quality of the video that algorithm gives us, which contributes to user's addiction to tiktok.
+                     There is a closed-loop relationship between Tiktok addiction and algorithm optimization. The more frequently users use tiktok, the more accurate the algorithm becomes, potentially exacerbating addiction.
+")
                 )
   )
 )
@@ -183,18 +219,31 @@ ui <- navbarPage(inverse = TRUE, "Final Project INFO201",
 server <- function(input, output) {
 
   #Video Length ScatterPlot output
-  length_tag <- reactive({
-    tiktok_df[tiktok_df$duration_category == input$length, ]
-  })
+  length_tag <- function(tags){
+    vlength <- filter(tiktok_df, duration_category == tags)
+    return(vlength)
+  }
   
-  output$chart <- renderPlot({
-    plot <- ggplot(data = length_tag(), aes(x=video_length.x, y=n_plays.x, color = "#ff0050" )) + 
+  output$length_chart <- renderPlot({
+    plot <- ggplot(data = length_tag(input$length_cat), aes(x=video_length.x, y=n_plays.x, color = "#ff0050" )) + 
       geom_point()+
-      labs(x = "Video Length (Seconds)", y = "View Count",)
+      labs(x = "Video Length (Seconds)", y = "View Count", ) +
+      geom_hline(yintercept = mean(length_tag(input$length_cat)$n_plays.x), color = "#00f2ea")
     plot + theme(
       plot.background = element_rect(fill = "white"), 
-      panel.background = element_rect(fill = "black")
+      panel.background = element_rect(fill = "black"),
+      axis.title = element_text(size = 14, face = "bold"),
+      axis.text = element_text(size = 12, face = "bold")
     )
+  })
+
+  average_view_count <- reactive({
+    mean(length_tag(input$length_cat)$n_plays.x)
+  })
+  
+  output$average_view_count <- renderText({
+    paste("As shown by the light blue horizontal line in the graph, the average view count for the", 
+          input$length_cat, "length category is around", round(average_view_count(), 2))
   })
   
   #Trending Song Wordcloud & Table output
@@ -224,7 +273,7 @@ server <- function(input, output) {
   
   
   #Plots on hashtags vs likes
-  output$plothash <- renderPlot({
+  output$avg_hash <- renderPlot({
     ggplot(tiktok_df, aes(x=n_hash, y=n_plays.x)) +
       geom_point() + 
       ggtitle("Number of Plays vs Number of Hashtags Used") +
@@ -233,10 +282,10 @@ server <- function(input, output) {
       geom_vline(xintercept = mean(tiktok_df$n_hash, na.rm = T))
   })
   
-  tiktok <- reactive({
-    
-    tiktok_ <- filter(tiktok_df, n_likes.x < max(input$likes), n_likes.x > min(input$likes))
-    tiktok_
+  tiktok<- reactive({
+    req(input$views)
+    tiktok_ <- filter(tiktok_df, n_plays.x < max(input$views), n_plays.x > min(input$views))
+    return(tiktok_)
   })
   
   output$trending <- renderPlot({
@@ -244,9 +293,15 @@ server <- function(input, output) {
       tiktok_ <- data.frame(table(unlist(strsplit(tolower(tiktok()$hashtags.x), ",")))) %>%top_n(15)
       colnames(tiktok_) <- c("Hashtag", "Count")
       p <-ggplot(tiktok_[0:15,], aes(Hashtag, Count))
-      p + geom_bar(stat = "identity", fill = "#ff0050")
+      p + geom_bar(stat = "identity", fill = "#ff0050") +
+        labs(x = "Hashtags", y = "View Count", ) +
+        theme(
+          axis.title = element_text(size = 14, face = "bold"),
+          axis.text = element_text(size = 12, face = "bold")
+        )
     }
   })
+  
 }
 #Make the app 
 shinyApp(ui, server)
